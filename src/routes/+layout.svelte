@@ -2,6 +2,10 @@
 	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 
+	// Toast Popups
+	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
+	initializeStores();
+
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
 	import 'highlight.js/styles/github-dark.css';
@@ -22,6 +26,9 @@
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 </script>
+
+<!-- Singletons -->
+<Toast />
 
 <!-- App Shell -->
 <AppShell>

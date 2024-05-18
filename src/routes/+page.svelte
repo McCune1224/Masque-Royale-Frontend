@@ -1,22 +1,32 @@
 <script lang="ts">
-	import { getHealthcheck } from '$lib/api';
+	import { getHealthcheck, handleApiCall } from '$lib/api';
 	import type { Healthcheck } from '$lib/api';
-	let healthyResp: Healthcheck;
-	let error: string | null = '';
+	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	let healthyResp: Healthcheck | null;
+	let error: string | null;
+	let errToast: ToastSettings = {
+		message: 'This message will auto-hide after 5 seconds.',
+		timeout: 5000
+	};
 
-	async function loadHealthCheck() {
-		try {
-			healthyResp = await getHealthcheck();
-		} catch (err) {
-			error = (err as Error).message;
+	const toastStore = getToastStore();
+
+	async function GetHealthCheck() {
+		const { response, error: err } = await handleApiCall(getHealthcheck);
+		healthyResp = response;
+		error = err;
+		error = 'test';
+		if (error != null) {
+			toastStore.trigger({
+				message: error,
+				timeout: 5000,
+				background: 'variant-filled-error'
+			});
 		}
 	}
 </script>
 
 <main>
-	{#if error}
-		<p class="error">{error}</p>
-	{/if}
 	{#if healthyResp}
 		<p>{healthyResp.response_time}</p>
 	{/if}
@@ -24,6 +34,6 @@
 
 	<div>
 		<h2>Health Check</h2>
-		<button on:click={loadHealthCheck}>Create</button>
+		<button on:click={GetHealthCheck}>Create</button>
 	</div>
 </main>
