@@ -1,39 +1,60 @@
 <script lang="ts">
-	import { getHealthcheck, handleApiCall } from '$lib/api';
-	import type { Healthcheck } from '$lib/api';
-	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
-	let healthyResp: Healthcheck | null;
-	let error: string | null;
-	let errToast: ToastSettings = {
-		message: 'This message will auto-hide after 5 seconds.',
-		timeout: 5000
-	};
+	import { GamesGetAll, type Game } from '$lib/api/game';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+	import type { PageData } from './$types';
+	import { onMount } from 'svelte';
 
-	const toastStore = getToastStore();
+	const errorStore = getToastStore();
+	export let data: PageData;
 
-	async function GetHealthCheck() {
-		const { response, error: err } = await handleApiCall(getHealthcheck);
-		healthyResp = response;
-		error = err;
-		error = 'test';
-		if (error != null) {
-			toastStore.trigger({
-				message: error,
-				timeout: 5000,
+	let games: Game[] | null;
+
+	async function buttonAllGames() {
+		try {
+			const response = await GamesGetAll();
+			games = response;
+		} catch (err) {
+			console.log((err = (err as Error).message));
+			errorStore.trigger({
+				message: 'Unable to fetch random game',
+				timeout: 7000,
 				background: 'variant-filled-error'
 			});
 		}
 	}
+
+	if (data.error) {
+		onMount(() => {
+			errorStore.trigger({
+				message: data.error,
+				timeout: 7000,
+				background: 'variant-filled-error'
+			});
+		});
+	}
 </script>
 
-<main>
-	{#if healthyResp}
-		<p>{healthyResp.response_time}</p>
-	{/if}
-	<h1>TODO</h1>
+<section class="container h-full mx-auto flex flex-col gap-4 px-4 sm:px-0">
+	<h1 class="h1 text-6xl text-center">Masque Royale</h1>
 
-	<div>
-		<h2>Health Check</h2>
-		<button on:click={GetHealthCheck}>Create</button>
-	</div>
-</main>
+	{#if data.games}
+		<div class="bg-tertiary-700">
+			<h2 class="h2 text-center bg-secondary-800">Current Games</h2>
+			<div class="flex flex-col gap-4">
+				{#each data.games as game}
+					<div class="flex flex-row gap-3 justify-evenly">
+						<div>
+							<h4 class="h4">{game.Name}</h4>
+							<p class="text-md">{game.PlayerCount} Players</p>
+						</div>
+						<a
+							class="btn btn-sm variant-ghost-tertiary"
+							href={`games/${game.Id}/join`}
+							rel="noreferrer">Join Game</a
+						>
+					</div>
+				{/each}
+			</div>
+		</div>
+	{/if}
+</section>
