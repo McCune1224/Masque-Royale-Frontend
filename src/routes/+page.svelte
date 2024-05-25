@@ -1,56 +1,62 @@
 <script lang="ts">
-	import { GamesGetAll, type Game } from '$lib/api/game';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import type { PageData } from './$types';
+	import SuperDebug from 'sveltekit-superforms';
+	import type { ActionData, PageData } from './$types';
+	import { superForm } from 'sveltekit-superforms/client';
 	import { onMount } from 'svelte';
 
-	const errorStore = getToastStore();
 	export let data: PageData;
+	export let actData: ActionData;
 
-	let games: Game[] | null;
+	const errorStore = getToastStore();
 
-	async function buttonAllGames() {
-		try {
-			const response = await GamesGetAll();
-			games = response;
-		} catch (err) {
-			console.log((err = (err as Error).message));
+	onMount(() => {
+		if (data.error) {
 			errorStore.trigger({
-				message: 'Unable to fetch random game',
-				timeout: 7000,
-				background: 'variant-filled-error'
+				message: data.error
 			});
 		}
-	}
+	});
 
-	if (data.error) {
-		onMount(() => {
-			errorStore.trigger({
-				message: data.error,
-				timeout: 7000,
-				background: 'variant-filled-error'
-			});
-		});
-	}
+	const { form, errors, enhance } = superForm(data.form);
 </script>
 
 <section class="container h-full mx-auto flex flex-col gap-4 px-4 sm:px-0">
+	<!-- <SuperDebug data={$form} /> -->
 	<h1 class="h1 text-6xl text-center">Masque Royale</h1>
 
+	<div class="bg-zinc-800 p-4 text-token">
+		<h2 class="h2 text-center">New Game</h2>
+		<form class="flex flex-col" method="POST" use:enhance>
+			<label class="label" for="name"
+				>Name
+				<input class="input" type="text" name="name" bind:value={$form.name} />
+			</label>
+			{#if $errors.name}<span class="invalid bg-error-700">{$errors.name}</span>{/if}
+
+			<button class="btn btn-lg variant-glass-primary">Submit</button>
+		</form>
+	</div>
+
 	{#if data.games}
-		<div class="bg-tertiary-700">
-			<h2 class="h2 text-center bg-secondary-800">Current Games</h2>
+		<div class="bg-zinc-800">
+			<h2 class="h2 text-center bg-zinc-800 py-3">Current Games</h2>
 			<div class="flex flex-col gap-4">
 				{#each data.games as game}
-					<div class="flex flex-row gap-3 justify-evenly">
+					<div class="flex flex-col gap-1 text-center">
 						<div>
-							<h4 class="h4">{game.Name}</h4>
-							<p class="text-md">{game.PlayerCount} Players</p>
+							<h4 class="h4">{game.name}</h4>
+							<p class="text-md">{game.player_ids ?? 0} Players</p>
 						</div>
 						<a
-							class="btn btn-sm variant-ghost-tertiary"
-							href={`games/${game.Id}/join`}
+							class="btn btn-sm variant-glass-primary"
+							href={`games/${game.id}/join`}
 							rel="noreferrer">Join Game</a
+						>
+						<a
+							class="btn btn-sm variant-glass-primary"
+							href={`games/${game.id}/admin`}
+							rel="noreferrer">Admin Join</a
 						>
 					</div>
 				{/each}

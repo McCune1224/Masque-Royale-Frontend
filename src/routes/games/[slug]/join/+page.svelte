@@ -19,6 +19,6 @@
 	{/if}
 
 	{#if data.game}
-		<h1 class="h1">Hello from {data.game.Id}</h1>
+		<h1 class="h1">Hello from {data.game.id}</h1>
 	{/if}
 </section>
