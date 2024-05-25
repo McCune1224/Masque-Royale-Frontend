@@ -6,7 +6,7 @@
 	import { onMount } from 'svelte';
 
 	export let data: PageData;
-	export let actData: ActionData;
+	// export const actData: ActionData;
 
 	const errorStore = getToastStore();
 
