@@ -1,41 +1,16 @@
-import { optimizeDeps } from 'vite';
-import { fetchWrapper, postRequest } from './util';
-import type { ApiResponse } from './util';
+import { PUBLIC_BACKEND_URL } from '$env/static/public';
+import { ApiClientBase } from './api';
+import type { Game } from './types';
 
-export interface Game {
-	id: number;
-	name: string;
-	phase: string;
-	round: number;
-	player_ids: number[];
-	updatedAt: string;
-	createdAt: string;
-}
-
-export async function getGames(): Promise<Game[]> {
-	return fetchWrapper<Game[]>('/api/games/');
-}
-
-export async function gamesGetByID(id: number): Promise<Game> {
-	return fetchWrapper<Game>(`/api/games/${id}`);
-}
-
-export async function gamesCreate(name: string): Promise<ApiResponse<Game>> {
-	try {
-		const opts: RequestInit = {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ name: name })
-		};
-		return fetchWrapper<ApiResponse<Game>>(`/api/games`, opts);
-	} catch (error) {
-		console.error('Error:', error);
-		throw error;
+export class gameApi extends ApiClientBase {
+	constructor() {
+		super(PUBLIC_BACKEND_URL);
 	}
-}
+	public getAllGames(): Promise<Game[]> {
+		return this.get<Game[]>('/api/games');
+	}
 
-export async function updateGame(id: number, gameData: Partial<Game>): Promise<ApiResponse<Game>> {
-	return postRequest<Partial<Game>, Game>(`api/games/${id}`, gameData);
+	public createGame(user: Partial<Pick<Game, 'name'>>): Promise<Game> {
+		return this.post<Game>('/api/games', user);
+	}
 }
