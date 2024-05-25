@@ -1,11 +1,5 @@
-import { z } from 'zod';
 import type { PageServerLoad } from './$types';
 import { getGames, gamesCreate, type Game } from '$lib/api/game';
-
-// Define outside the load function so the adapter can be cached
-const schema = z.object({
-	name: z.string().min(3)
-});
 
 export const load = (async () => {
 	try {
