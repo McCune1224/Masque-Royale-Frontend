@@ -1,8 +1,5 @@
-import { error } from '@sveltejs/kit';
-import { zod } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
 import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
 import { getGames, gamesCreate, type Game } from '$lib/api/game';
 
 // Define outside the load function so the adapter can be cached
