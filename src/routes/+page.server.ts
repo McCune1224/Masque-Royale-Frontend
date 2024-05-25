@@ -1,4 +1,3 @@
-import { superValidate, message, fail } from 'sveltekit-superforms';
 import { error } from '@sveltejs/kit';
 import { zod } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
@@ -12,38 +11,26 @@ const schema = z.object({
 });
 
 export const load = (async () => {
-	const form = await superValidate(zod(schema));
 	try {
 		const gamesResponse = await getGames();
-		return { form, games: gamesResponse };
+		return { games: gamesResponse };
 	} catch (err) {
 		console.log(err);
-		return { form, error: (err as Error).message };
+		return { error: (err as Error).message };
 	}
 
 	// Always return { form } in load functions
 }) satisfies PageServerLoad;
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const formData = await request.formData();
-		const form = await superValidate(formData, zod(schema));
-		if (!form.valid) {
-			return fail(400, { form });
-		}
-
-		try {
-			const createResponse = await gamesCreate(form.data.name);
-			const game = createResponse.data;
-			return {
-				form,
-				game
-			};
-		} catch (err) {
-			if (!form.valid) {
-				// Again, return { form } and things will just work.
-				return fail(400, { form, error: err });
-			}
-		}
-	}
-} satisfies Actions;
+// export const actions: Actions = {
+// 	default: async ({ request }) => {
+// 		const formData = await request.formData();
+//
+// 		try {
+// 			const game = createResponse.data;
+// 			return {
+// 				game
+// 			};
+// 		} catch (err) {}
+// 	}
+// } satisfies Actions;

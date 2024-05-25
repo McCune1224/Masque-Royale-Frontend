@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import SuperDebug from 'sveltekit-superforms';
 	import type { ActionData, PageData } from './$types';
-	import { superForm } from 'sveltekit-superforms/client';
 	import { onMount } from 'svelte';
 
 	export let data: PageData;
@@ -17,22 +15,18 @@
 			});
 		}
 	});
-
-	const { form, errors, enhance } = superForm(data.form);
 </script>
 
 <section class="container h-full mx-auto flex flex-col gap-4 px-4 sm:px-0">
-	<!-- <SuperDebug data={$form} /> -->
 	<h1 class="h1 text-6xl text-center">Masque Royale</h1>
 
 	<div class="bg-zinc-800 p-4 text-token">
 		<h2 class="h2 text-center">New Game</h2>
-		<form class="flex flex-col" method="POST" use:enhance>
+		<form class="flex flex-col" method="POST">
 			<label class="label" for="name"
 				>Name
-				<input class="input" type="text" name="name" bind:value={$form.name} />
+				<input class="input" type="text" name="name" />
 			</label>
-			{#if $errors.name}<span class="invalid bg-error-700">{$errors.name}</span>{/if}
 
 			<button class="btn btn-lg variant-glass-primary">Submit</button>
 		</form>
