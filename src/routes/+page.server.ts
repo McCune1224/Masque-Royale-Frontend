@@ -45,10 +45,10 @@ export const actions = {
 		const client = new ApiClient();
 		try {
 			client.userApi.createGame({ name: form.data.name });
-			return message(form, 'Form posted successfully!');
+			return message(form, `Game ${form.data.name} Created!`);
 		} catch (err) {
 			console.log(err);
-			return fail(500, { form });
+			return fail(500, { form, err });
 		}
 	}
 } satisfies Actions;
