@@ -5,10 +5,6 @@ export interface ApiResponse<T = any> {
 	data: T;
 }
 
-export interface ApiError {
-	message: string;
-}
-
 export async function fetchWrapper<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
 	const response = await fetch(`${PUBLIC_BACKEND_URL}${endpoint}`, options);
 	if (!response.ok) {

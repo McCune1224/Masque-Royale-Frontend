@@ -7,6 +7,7 @@ import type { PageServerLoad } from './$types';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
+import { ApiError } from '$lib/api/api';
 
 const schema = z.object({
 	name: z.string().min(4)
@@ -44,11 +45,13 @@ export const actions = {
 		// TODO: Do something with the validated form.data
 		const client = new ApiClient();
 		try {
-			client.userApi.createGame({ name: form.data.name });
-			return message(form, `Game ${form.data.name} Created!`);
+			const newGame = await client.userApi.createGame({ name: form.data.name });
+			return message(form, `Game ${newGame.name} Created!`);
 		} catch (err) {
-			console.log(err);
-			return fail(500, { form, err });
+			if (err instanceof ApiError) {
+				console.log(err, 'returning fail now...');
+				return fail(err.status, { form, error: err.message });
+			}
 		}
 	}
 } satisfies Actions;

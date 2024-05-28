@@ -1,34 +1,20 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { ApiClient } from '$lib/api/client';
 	import type { Game } from '$lib/api/types';
 	import { superForm } from 'sveltekit-superforms';
 	import type { PageServerData } from './$types';
-	import { invalidateAll } from '$app/navigation';
 
 	export let data: PageServerData;
 	const { games } = data;
 
 	let gameCreateSending = false;
 	const client = new ApiClient();
-	const { form, errors, message } = superForm(data.form);
+	const { form, enhance, errors, message, delayed } = superForm(data.form);
 </script>
 
 <main class="gap-4 flex flex-col">
 	<h1 class="text-5xl text-center">Masque Royale</h1>
-	<form
-		class="flex flex-col p-4 bg-base-300"
-		method="POST"
-		use:enhance={() => {
-			gameCreateSending = true;
-			return ({ update }) => {
-				// Set invalidateAll to false if you don't want to reload page data when submitting
-				update({ invalidateAll: true }).finally(async () => {
-					gameCreateSending = false;
-				});
-			};
-		}}
-	>
+	<form class="flex flex-col p-4 bg-base-300" method="POST" use:enhance>
 		{#if $message}
 			<h3>{$message}</h3>
 		{/if}
@@ -38,7 +24,7 @@
 			<input name="name" type="text" class="grow" placeholder="Daisy" bind:value={$form.name} />
 		</label>
 		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
-		{#if gameCreateSending}
+		{#if $delayed}
 			<button class="btn">
 				<span class="loading loading-spinner"></span>
 				Sending...
