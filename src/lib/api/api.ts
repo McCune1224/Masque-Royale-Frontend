@@ -2,8 +2,8 @@ import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 export class ApiError extends Error {
 	constructor(
-		public status: number,
-		message: string
+		message: string,
+		public status: number
 	) {
 		super(message);
 		this.name = 'ApiError';
@@ -25,10 +25,9 @@ export class ApiClientBase {
 			},
 			...options
 		});
-
 		if (!response.ok) {
-			const error: ApiError = await response.json();
-			throw new Error(response.statusText || error.message);
+			const errorResponse = await response.json();
+			throw new ApiError(response.statusText || errorResponse.message, response.status);
 		}
 
 		return response.json() as Promise<T>;
