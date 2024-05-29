@@ -1,7 +1,6 @@
-import { message } from 'sveltekit-superforms';
+import { message, setError } from 'sveltekit-superforms';
 import { fail, type Actions } from '@sveltejs/kit';
 import { ApiClient } from '$lib/api/client';
-import { error } from '@sveltejs/kit';
 import type { Game } from '$lib/api/types';
 import type { PageServerLoad } from './$types';
 import { superValidate } from 'sveltekit-superforms';
@@ -50,7 +49,7 @@ export const actions = {
 		} catch (err) {
 			if (err instanceof ApiError) {
 				console.log(err, 'returning fail now...');
-				return fail(err.status, { form, error: err.message });
+				return setError(form, 'name', 'Name Already Exists');
 			}
 		}
 	}
