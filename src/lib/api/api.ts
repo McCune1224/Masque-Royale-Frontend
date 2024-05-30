@@ -27,7 +27,7 @@ export class ApiClientBase {
 		});
 		if (!response.ok) {
 			const errorResponse = await response.json();
-			throw new ApiError(response.statusText || errorResponse.message, response.status);
+			throw new ApiError(errorResponse.message || response.error || response.statusText || errorResponse.message, response.status);
 		}
 
 		return response.json() as Promise<T>;
