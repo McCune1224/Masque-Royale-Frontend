@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({}) => {
 
 	const form = await superValidate(zod(schema));
 	try {
-		games = await client.userApi.getAllGames();
+		games = await client.gameApi.getAllGames();
 		return {
 			form,
 			games
@@ -44,7 +44,7 @@ export const actions = {
 		// TODO: Do something with the validated form.data
 		const client = new ApiClient();
 		try {
-			const newGame = await client.userApi.createGame({ name: form.data.name });
+			const newGame = await client.gameApi.createGame({ name: form.data.name });
 			return message(form, `Game ${newGame.name} Created!`);
 		} catch (err) {
 			if (err instanceof ApiError) {
