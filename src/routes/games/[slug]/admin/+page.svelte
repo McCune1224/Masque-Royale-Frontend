@@ -7,13 +7,17 @@
 		const form = event.target;
 		const formData = new FormData(form);
 
-		const response = await fetch(PUBLIC_BACKEND_URL + '/api/games/1/admin/sync-roles-csv', {
-			method: 'POST',
-			body: formData
-		});
-
-		const result = await response.json();
-		console.log(result);
+		try {
+			const response = await fetch(PUBLIC_BACKEND_URL + '/api/games/1/admin/sync-roles-csv', {
+				method: 'POST',
+				body: formData
+			});
+			console.log(response);
+			const result = await response.json();
+			console.log(result);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 </script>
 
