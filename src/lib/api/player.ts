@@ -16,6 +16,10 @@ export class playerApi extends ApiClientBase {
 	}
 
 	public async updatePlayer(player: Partial<Player>): Promise<Player> {
-		return this.patch<Player>(`/api/games/${player.game_id}/players/${player.id}`, player);
+		return this.put<Player>(`/api/games/${player.game_id}/players/${player.id}`, player);
+	}
+
+	public async deletePlayer(player: Partial<Player>): Promise<Player> {
+		return this.delete<Player>(`/api/games/${player.game_id}/players/${player.id}`);
 	}
 }

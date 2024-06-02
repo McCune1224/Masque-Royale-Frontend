@@ -1,16 +1,22 @@
 <script lang="ts">
 	//get pblic key from env
 	import { PUBLIC_BACKEND_URL } from '$env/static/public';
-	import type { Writable } from 'svelte/store';
+	import { writable, derived, type Writable } from 'svelte/store';
 	import { roleSubmitting, anyAbilitySubmitting } from './stores';
 	import AddPlayerPanel from '$lib/components/admin/AddPlayerPanel.svelte';
 	import type { PageServerData } from './$types';
 	import PlayerAdminCard from '$lib/components/admin/PlayerAdminCard.svelte';
+	import type { Player } from '$lib/api/types';
 
 	export let data: PageServerData;
 	const { roles } = data;
 	const { rooms } = data;
 	const { players } = data;
+
+	const playerStore = writable<Player[]>([]);
+	if (players) {
+		playerStore.set(players);
+	}
 
 	// @ts-ignore - FIXME: Fix this, LayoutServerLoad is returning the game, but it thinks it's null for some reason
 	const game: Game = data.game;
@@ -46,8 +52,22 @@
 	);
 </script>
 
-<div class="flex flex-col justify-center gap-4">
-	<h1>{game.name}</h1>
+<section class="flex flex-col justify-center gap-4 sm:px-9 px-3">
+	<h1 class="sm:text-9xl text-5xl text-center p-9">{game.name}</h1>
+
+	{#if roles && rooms}
+		<AddPlayerPanel data={data.playerCreateForm} {roles} {rooms} />
+	{/if}
+
+	{#if players != undefined}
+		<h2 class="font-bold">Players</h2>
+		<div class="flex flex-col gap-4 sm:grid sm:grid-cols-3 sm:gap-4">
+			{#each $playerStore.sort((a, b) => a.name.localeCompare(b.name)) as player}
+				<PlayerAdminCard {player} {playerStore} />
+			{/each}
+		</div>
+	{/if}
+
 	<form class="flex flex-row gap-4 p-4" on:submit={handleRoleSubmit} enctype="multipart/form-data">
 		<p class="text-xl font-bold">Upload Roles CSV</p>
 		<label>
@@ -61,17 +81,4 @@
 			<button class="btn btn-accent" type="submit">Submit </button>
 		{/if}
 	</form>
-
-	{#if roles && rooms}
-		<AddPlayerPanel data={data.playerCreateForm} {roles} {rooms} />
-	{/if}
-
-	<div class="flex flex-col gap-4">
-		<div class="flex flex-col gap-4">
-			<h2 class="text-xl font-bold">Players</h2>
-			{#each players as player}
-				<PlayerAdminCard {player} />
-			{/each}
-		</div>
-	</div>
-</div>
+</section>

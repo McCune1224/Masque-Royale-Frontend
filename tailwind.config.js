@@ -8,6 +8,6 @@ export default {
 	plugins: [require('@tailwindcss/typography'), require('daisyui')],
 
 	daisyui: {
-		themes: ['retro', 'light', 'dark']
+		themes: ['night', 'light', 'dark']
 	}
 };

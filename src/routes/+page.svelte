@@ -13,7 +13,7 @@
 </script>
 
 <main class="gap-4 flex flex-col">
-	<h1 class="text-5xl text-center">Masque Royale</h1>
+	<h1 class="sm:text-9xl text-5xl text-center p-9">Masque Royale</h1>
 	<form class="flex flex-col p-4 bg-base-300" method="POST">
 		{#if $message}
 			<h3>{$message}</h3>

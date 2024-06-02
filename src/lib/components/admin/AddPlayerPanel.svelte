@@ -3,6 +3,7 @@
 	import type { SuperValidated, Infer } from 'sveltekit-superforms';
 	import SuperDebug, { superForm } from 'sveltekit-superforms';
 	import type { PlayerCreateSchema } from '$lib/schemas';
+	import { type Writable } from 'svelte/store';
 
 	export let data: SuperValidated<Infer<PlayerCreateSchema>>;
 	export let roles: Role[];
@@ -11,42 +12,50 @@
 	const { form, errors, enhance } = superForm(data);
 </script>
 
-<div class="flex flex-col gap-4">
-	<form action="?/add_player" method="POST" use:enhance>
-		<label class="input input-bordered flex items-center gap-2">
-			<input
+<div class="max-w-md sm:max-w-lg bg-neutral p-3 shadow-lg mg-auto">
+	<form class="flex flex-col gap-4" action="?/add_player" method="POST">
+		<div class="flex flex-col gap-4">
+			{#if $errors.name}<span class="bg-error text-base-content">{$errors.name}</span>{/if}
+			Player Name
+			<label class="input input-bordered flex items-center gap-2">
+				<input
+					required
+					type="text"
+					class="grow"
+					name="name"
+					placeholder="Name"
+					bind:value={$form.name}
+				/>
+			</label>
+		</div>
+		<div class="flex flex-col gap-2">
+			Select a Role
+			<select
 				required
-				type="text"
-				class="grow"
-				name="name"
-				placeholder="Name"
-				bind:value={$form.name}
-			/>
-		</label>
-		Select a Role
-		<select
-			required
-			name="role_id"
-			bind:value={$form.role_id}
-			class="select select-bordered w-full max-w-xs"
-		>
-			{#each roles as role}
-				<option selected={$form.role_id === role.id} value={role.id}>{role.name}</option>
-			{/each}
-		</select>
+				name="role_id"
+				bind:value={$form.role_id}
+				class="select select-bordered focus:select-secondary w-full"
+			>
+				{#each roles as role}
+					<option selected={$form.role_id === role.id} value={role.id}>{role.name}</option>
+				{/each}
+			</select>
+		</div>
 
-		Select a Room
-		<select
-			required
-			name="room_id"
-			bind:value={$form.room_id}
-			class="select select-bordered w-full max-w-xs"
-		>
-			{#each rooms as room}
-				<option value={room.id}>{room.name}</option>
-			{/each}
-		</select>
+		<div class="flex flex-col gap-2">
+			Select a Room
+			<select
+				required
+				name="room_id"
+				bind:value={$form.room_id}
+				class="select select-bordered focus:select-secondary w-full"
+			>
+				{#each rooms as room}
+					<option value={room.id}>{room.name}</option>
+				{/each}
+			</select>
 
-		<button class="btn btn-accent">Add Player</button>
+			<button class="btn btn-accent">Add Player</button>
+		</div>
 	</form>
 </div>
