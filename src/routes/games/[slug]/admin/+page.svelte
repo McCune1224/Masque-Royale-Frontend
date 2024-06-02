@@ -5,10 +5,12 @@
 	import { roleSubmitting, anyAbilitySubmitting } from './stores';
 	import AddPlayerPanel from '$lib/components/admin/AddPlayerPanel.svelte';
 	import type { PageServerData } from './$types';
+	import PlayerAdminCard from '$lib/components/admin/PlayerAdminCard.svelte';
 
 	export let data: PageServerData;
 	const { roles } = data;
 	const { rooms } = data;
+	const { players } = data;
 
 	// @ts-ignore - FIXME: Fix this, LayoutServerLoad is returning the game, but it thinks it's null for some reason
 	const game: Game = data.game;
@@ -63,4 +65,13 @@
 	{#if roles && rooms}
 		<AddPlayerPanel data={data.playerCreateForm} {roles} {rooms} />
 	{/if}
+
+	<div class="flex flex-col gap-4">
+		<div class="flex flex-col gap-4">
+			<h2 class="text-xl font-bold">Players</h2>
+			{#each players as player}
+				<PlayerAdminCard {player} />
+			{/each}
+		</div>
+	</div>
 </div>

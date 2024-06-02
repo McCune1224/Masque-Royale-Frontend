@@ -9,16 +9,18 @@ import type { Player } from '$lib/api/types';
 import { PUBLIC_BACKEND_URL } from '$env/static/public';
 import { ApiError } from '$lib/api/api';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ params }) => {
 	const client = new ApiClient();
 	const playerCreateForm = await superValidate(zod(playerCreateSchema));
 
 	try {
 		const roles = await client.roleApi.getAllRoles();
 		const rooms = await client.roomApi.getAllRooms();
+		const players = await client.playerApi.getAllPlayersForGame(params.slug);
 		return {
 			roles,
 			rooms,
+			players,
 			playerCreateForm
 		};
 	} catch (error) {

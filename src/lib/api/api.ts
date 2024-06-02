@@ -54,6 +54,13 @@ export class ApiClientBase {
 		});
 	}
 
+	public patch<T>(endpoint: string, body: any): Promise<T> {
+		return this.request<T>(endpoint, {
+			method: 'PATCH',
+			body: JSON.stringify(body)
+		});
+	}
+
 	public delete<T>(endpoint: string): Promise<T> {
 		return this.request<T>(endpoint, {
 			method: 'DELETE'

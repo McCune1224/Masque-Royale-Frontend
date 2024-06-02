@@ -6,12 +6,16 @@ export class playerApi extends ApiClientBase {
 	constructor() {
 		super(PUBLIC_BACKEND_URL);
 	}
-	public async getAllPlayersForGame(gameId: number): Promise<Player[]> {
+	public async getAllPlayersForGame(gameId: string): Promise<Player[]> {
 		return this.get<Player[]>(`/api/games/${gameId}/players`);
 	}
 	//
 	// create the player, only with a few fields being required
 	public async createPlayer(gameID: string, player: Partial<Player>): Promise<Player> {
 		return this.post<Player>(`/api/games/${gameID}/players`, player);
+	}
+
+	public async updatePlayer(player: Partial<Player>): Promise<Player> {
+		return this.patch<Player>(`/api/games/${player.game_id}/players/${player.id}`, player);
 	}
 }
