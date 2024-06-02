@@ -2,42 +2,62 @@
 import type { Actions } from '@sveltejs/kit';
 import { superValidate, fail, message, setError } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { csvSchema } from '$lib/types';
 import type { PageServerLoad } from './$types';
 import { ApiClient } from '$lib/api/client';
+import { playerCreateSchema } from '$lib/schemas';
+import type { Player } from '$lib/api/types';
+import { PUBLIC_BACKEND_URL } from '$env/static/public';
+import { ApiError } from '$lib/api/api';
 
 export const load: PageServerLoad = async () => {
-	return {
-		form: await superValidate(zod(csvSchema))
-	};
+	const client = new ApiClient();
+	const playerCreateForm = await superValidate(zod(playerCreateSchema));
+
+	try {
+		const roles = await client.roleApi.getAllRoles();
+		const rooms = await client.roomApi.getAllRooms();
+		return {
+			roles,
+			rooms,
+			playerCreateForm
+		};
+	} catch (error) {
+		console.log(error);
+		return {
+			playerCreateForm
+		};
+	}
 };
 
 export const actions = {
-	default: async ({ request, params }) => {
-		const form = await superValidate(request, zod(csvSchema));
-
+	add_player: async ({ request, params }) => {
+		const form = await superValidate(request, zod(playerCreateSchema));
 		if (!form.valid) {
 			return fail(400, { form });
 		}
+		const game_id = params.slug;
 
-		// TODO: Do something with the csv
-		console.log(form.data.csv);
+		const payload = {
+			name: form.data.name,
+			role_id: form.data.role_id,
+			room_id: form.data.room_id
+		};
+
+		console.log(payload);
+
 		const client = new ApiClient();
-		//WARNING: This is a hack to get the id
-		const id = +(params.slug as string);
 		try {
-			//blob vs base64
-			const base64 = await form.data.csv.arrayBuffer();
-			console.log(base64);
-
-
-			const response = await client.adminApi.uploadRolesCSV(id, base64);
-
+			const response = await client.playerApi.createPlayer(game_id, payload);
 			console.log(response);
-			return message(form, `File uploaded successfully`);
-		} catch (error) {
-			console.log(error);
-			return setError(form, 'csv', 'File is not valid');
+			return message(form, `Player ${form.data.name} Added!`);
+		} catch (er) {
+			if (er instanceof ApiError) {
+				console.log(er, 'returning fail now...');
+				return setError(form, 'name', 'Name Already Exists');
+			} else {
+				console.log(er);
+				return setError(form, 'name', 'Something went wrong');
+			}
 		}
 	}
 } satisfies Actions;

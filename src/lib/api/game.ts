@@ -10,6 +10,12 @@ export class gameApi extends ApiClientBase {
 		return this.get<Game[]>('/api/games');
 	}
 
+	public async getGame(id: number): Promise<Game> {
+		return this.get<Game>(`/api/games/${id}`);
+	}
+
+
+
 	public async createGame(user: Partial<Pick<Game, 'name'>>): Promise<Game> {
 		return this.post<Game>('/api/games', user);
 	}
