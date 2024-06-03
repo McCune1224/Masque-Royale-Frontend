@@ -22,4 +22,8 @@ export class playerApi extends ApiClientBase {
 	public async deletePlayer(player: Partial<Player>): Promise<Player> {
 		return this.delete<Player>(`/api/games/${player.game_id}/players/${player.id}`);
 	}
+
+	public async getPlayer(gameId: string, playerId: string): Promise<Player> {
+		return this.get<Player>(`/api/games/${gameId}/players/${playerId}`);
+	}
 }

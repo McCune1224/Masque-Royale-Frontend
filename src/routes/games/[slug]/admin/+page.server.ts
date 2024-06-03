@@ -45,12 +45,10 @@ export const actions = {
 			room_id: form.data.room_id
 		};
 
-		console.log(payload);
 
 		const client = new ApiClient();
 		try {
 			const response = await client.playerApi.createPlayer(game_id, payload);
-			console.log(response);
 			return message(form, `Player ${form.data.name} Added!`);
 		} catch (er) {
 			if (er instanceof ApiError) {

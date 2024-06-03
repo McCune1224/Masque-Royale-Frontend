@@ -39,8 +39,7 @@
 				{#each games.sort((a, b) => a.name.localeCompare(b.name)) as game}
 					<div class="stats shadow">
 						<div class="stat text-center border-2 shadow-2xl">
-							<div class="text-xl">{game.name}</div>
-							<h2 class="stat-title">Players: {game.player_ids?.length || 0}</h2>
+							<div class="text-3xl">{game.name}</div>
 							<div class="gap-2">
 								<a href={`/games/${game.id}/join`} class="btn btn-accent">Player Join</a>
 								<a href={`/games/${game.id}/admin`} class="btn btn-accent">Admin Join</a>

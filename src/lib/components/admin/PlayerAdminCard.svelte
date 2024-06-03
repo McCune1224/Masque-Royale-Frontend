@@ -16,7 +16,6 @@
 		try {
 			const response = await client.playerApi.updatePlayer(player);
 			loadingAliveToggle = false;
-			console.log(response);
 		} catch (error) {
 			console.log(error);
 			loadingAliveToggle = false;
@@ -33,7 +32,6 @@
 				return cp.filter((p: Player) => p.id !== player.id);
 			});
 			loadingDeletePlayer = false;
-			console.log(response);
 		} catch (error) {
 			console.log(error);
 			loadingDeletePlayer = false;
@@ -48,7 +46,6 @@
 		try {
 			const response = await client.playerApi.updatePlayer(player);
 			loadingAddNotes = false;
-			console.log(response);
 		} catch (error) {
 			console.log(error);
 			loadingAddNotes = false;
@@ -94,12 +91,14 @@
 			<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
 				<div class="modal-box">
 					<h3 class="font-bold text-lg">CAUTION: Deleting a player is not revertable</h3>
-					<p class="py-4">Only Delete if you're CERTAIN this play will not be playing anymore.</p>
+					<p class="py-4">
+						Only hit Delete if you're CERTAIN this player will not be playing anymore.
+					</p>
 					<div class="modal-action">
 						<form method="dialog">
 							<!-- if there is a button in form, it will close the modal -->
 							<div class="flex gap-8">
-								<button class="btn btn-error" on:click={handleDeletePlayer}>Delte Player</button>
+								<button class="btn btn-error" on:click={handleDeletePlayer}>Delete Player</button>
 								<button class="btn btn-accent">Cancel</button>
 							</div>
 						</form>

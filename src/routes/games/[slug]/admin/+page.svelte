@@ -34,9 +34,7 @@
 					method: 'POST',
 					body: formData
 				});
-				console.log(response);
 				const result = await response.json();
-				console.log(result);
 				state.set(false);
 			} catch (error) {
 				console.log(error);

@@ -25,6 +25,29 @@ export interface Role {
 	alignment: string;
 }
 
+export interface PassiveDetails {
+	id: number;
+	name: string;
+	description: string;
+}
+
+export interface AbilityDetails {
+	id: number;
+	name: string;
+	description: string;
+	default_charges: number;
+	category_ids: number[];
+	rarity: string;
+	anyAbility: boolean;
+}
+
+
+
+export interface CompleteRole {
+	role: Role;
+	passives: PassiveDetails[];
+	abilities: AbilityDetails[];
+}
 
 export interface Room {
 	id: number;
