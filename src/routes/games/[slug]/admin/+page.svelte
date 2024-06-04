@@ -79,4 +79,22 @@
 			<button class="btn btn-accent" type="submit">Submit </button>
 		{/if}
 	</form>
+
+	<form
+		class="flex flex-row gap-4 p-4"
+		on:submit={handleAnyAbilitySubmit}
+		enctype="multipart/form-data"
+	>
+		<p class="text-xl font-bold">Upload AnyAbilities CSV</p>
+		<label>
+			<input type="file" name="file" class="file-input file-input-bordered w-full max-w-xs" />
+		</label>
+		{#if $anyAbilitySubmitting}
+			<button class="btn btn-disabled" disabled
+				>Updating Any AnyAbilities<span class="loading loading-ring loading-md"></span></button
+			>
+		{:else}
+			<button class="btn btn-accent" type="submit">Submit </button>
+		{/if}
+	</form>
 </section>
