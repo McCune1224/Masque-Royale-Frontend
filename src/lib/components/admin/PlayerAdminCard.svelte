@@ -1,16 +1,25 @@
 <script lang="ts">
 	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 	import { ApiClient } from '$lib/api/client';
-	import type { Player } from '$lib/api/types';
-	import { type Writable } from 'svelte/store';
+	import type { Player, Room } from '$lib/api/types';
+	import { onMount } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
 
 	export let player: Player;
 	export let playerStore: Writable<Player[]>;
+	const client = new ApiClient();
+
+	//reactive room variable:
+	let room: Room;
+	const loading = writable(true);
+	onMount(async () => {
+		room = await client.roomApi.getRoom(player.room_id);
+		loading.set(false);
+	});
 
 	let loadingAliveToggle = false;
 	let loadingDeletePlayer = false;
 	async function handleToggleAlive() {
-		const client = new ApiClient();
 		loadingAliveToggle = true;
 		player.alive = !player.alive;
 		try {
@@ -23,7 +32,6 @@
 	}
 
 	async function handleDeletePlayer() {
-		const client = new ApiClient();
 		loadingDeletePlayer = true;
 		try {
 			const response = await client.playerApi.deletePlayer(player);
@@ -41,7 +49,6 @@
 	let loadingAddNotes = false;
 	async function handleAddNotes() {
 		loadingAddNotes = true;
-		const client = new ApiClient();
 		loadingAddNotes = true;
 		try {
 			const response = await client.playerApi.updatePlayer(player);
@@ -51,13 +58,32 @@
 			loadingAddNotes = false;
 		}
 	}
+
+	let loadingChangeRoom = false;
+	async function handleChangeRoom() {
+		loadingChangeRoom = true;
+		try {
+			const response = await client.playerApi.updatePlayer(player);
+			loadingChangeRoom = false;
+		} catch (error) {
+			console.log(error);
+			loadingChangeRoom = false;
+		}
+	}
 </script>
 
 <div
 	class={'bg-neutral p-8 ' + (player.alive ? '' : 'border-2 border-dashed border-white opacity-50')}
 >
 	<div class="flex items-center gap-2">
-		<div class="text-2xl font-bold">{player.name}</div>
+		<div class="text-2xl font-bold flex flex-col">
+			<p class="text-xl">{player.name}</p>
+			{#if !$loading}
+				<p class="text-sm">{room.name}</p>
+			{:else}
+				<div class="skeleton w-32 h-4"></div>
+			{/if}
+		</div>
 	</div>
 	<div class="">
 		<!-- You can open the modal using ID.showModal() method -->

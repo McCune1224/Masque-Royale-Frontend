@@ -11,4 +11,8 @@ export class roomApi extends ApiClientBase {
 		return this.get<Room[]>('/api/rooms');
 	}
 
+	public async getRoom(id: string): Promise<Room> {
+		return this.get<Room>(`/api/rooms/${id}`);
+	}
+
 }

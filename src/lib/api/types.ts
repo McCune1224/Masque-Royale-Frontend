@@ -38,9 +38,15 @@ export interface AbilityDetails {
 	default_charges: number;
 	category_ids: number[];
 	rarity: string;
+	priority: number;
 	anyAbility: boolean;
 }
 
+export interface Category {
+	id: number;
+	name: string;
+	priority: number;
+}
 
 
 export interface CompleteRole {
