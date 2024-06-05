@@ -42,12 +42,21 @@ export interface AbilityDetails {
 	anyAbility: boolean;
 }
 
+export interface AnyAbilityDetails {
+	id: number;
+	name: string;
+	shorthand: string;
+	description: string;
+	category_ids: number[];
+	rarity: string;
+	priority: number;
+}
+
 export interface Category {
 	id: number;
 	name: string;
 	priority: number;
 }
-
 
 export interface CompleteRole {
 	role: Role;
