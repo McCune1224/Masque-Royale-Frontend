@@ -10,7 +10,9 @@
 	let actionOptions: AnyAbilityDetails[];
 	const apiClient = new ApiClient();
 	onMount(async () => {
-		actionOptions = await apiClient.anyAbilityDetailsApi.getAllAnyAbilities();
+		actionOptions = (await apiClient.anyAbilityDetailsApi.getAllAnyAbilities()).sort((a, b) =>
+			a.name.localeCompare(b.name)
+		);
 		loading.set(false);
 		console.log(actionOptions);
 	});
