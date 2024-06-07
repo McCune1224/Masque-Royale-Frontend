@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { PageServerData } from './$types';
+	import type { PageData, PageServerData } from './$types';
 	import { writable } from 'svelte/store';
 	import { ApiClient } from '$lib/api/client';
 	import type { Category } from '$lib/api/types';
 
-	export let data: PageServerData;
+	export let data: PageData;
 	const client = new ApiClient();
-
 	const { currentPlayer, currentRole, error } = data;
 </script>
 

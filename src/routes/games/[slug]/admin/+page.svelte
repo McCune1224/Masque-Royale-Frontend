@@ -51,7 +51,7 @@
 </script>
 
 <section class="flex flex-col justify-center gap-4 sm:px-9 px-3">
-	<h1 class="sm:text-9xl text-5xl text-center p-9">{game.name}</h1>
+	<h1 class="sm:text-9xl text-5xl text-center p-9">{game.name} Admin Panel</h1>
 
 	{#if roles && rooms}
 		<AddPlayerPanel data={data.playerCreateForm} {roles} {rooms} />

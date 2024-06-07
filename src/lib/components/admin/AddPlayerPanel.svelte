@@ -12,8 +12,9 @@
 	const { form, errors, enhance } = superForm(data);
 </script>
 
-<div class="max-w-md sm:max-w-lg bg-neutral p-3 shadow-lg mg-auto">
+<div class="bg-neutral p-3 shadow-lg mg-auto">
 	<form class="flex flex-col gap-4" action="?/add_player" method="POST">
+		<h2 class="text-xl font-bold">Add Player</h2>
 		<div class="flex flex-col gap-4">
 			{#if $errors.name}<span class="bg-error text-base-content">{$errors.name}</span>{/if}
 			Player Name

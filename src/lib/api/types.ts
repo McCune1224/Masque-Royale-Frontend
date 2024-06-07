@@ -69,3 +69,15 @@ export interface Room {
 	name: string;
 	description: string;
 }
+
+export interface Action {
+	id: number;
+	game_id: number;
+	player_id: number;
+	pending_approval: boolean;
+	resolved: boolean;
+	target: string;
+	context: string;
+	ability_name: string;
+	role_id?: number;
+}

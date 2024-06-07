@@ -81,7 +81,7 @@
 			{#if !$loading}
 				<p class="text-sm">{room.name}</p>
 			{:else}
-				<div class="skeleton w-32 h-4"></div>
+				<div class="skeleton w-32 h-32"></div>
 			{/if}
 		</div>
 	</div>
