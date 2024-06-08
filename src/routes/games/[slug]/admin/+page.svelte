@@ -4,10 +4,13 @@
 	import { writable, derived, type Writable } from 'svelte/store';
 	import { roleSubmitting, anyAbilitySubmitting } from './stores';
 	import AddPlayerPanel from '$lib/components/admin/AddPlayerPanel.svelte';
+	import { goto } from '$app/navigation';
 	import type { PageServerData } from './$types';
 	import PlayerAdminCard from '$lib/components/admin/PlayerAdminCard.svelte';
-	import type { Player } from '$lib/api/types';
+	import type { Game, Player } from '$lib/api/types';
+	import { ApiClient } from '$lib/api/client';
 
+	const client = new ApiClient();
 	export let data: PageServerData;
 	const { roles } = data;
 	const { rooms } = data;
@@ -18,8 +21,7 @@
 		playerStore.set(players);
 	}
 
-	// @ts-ignore - FIXME: Fix this, LayoutServerLoad is returning the game, but it thinks it's null for some reason
-	const game: Game = data.game;
+	const game = writable<Game>(data.game);
 
 	function formPost(url: string, state: Writable<boolean>) {
 		return async (event) => {
@@ -48,10 +50,47 @@
 		'/api/games/1/admin/sync-any-abilities-csv',
 		anyAbilitySubmitting
 	);
+
+	async function handleDeleteGame() {
+		try {
+			const response = await client.gameApi.deleteGame($game.id.toString());
+			goto('/');
+		} catch (error) {}
+	}
 </script>
 
 <section class="flex flex-col justify-center gap-4 sm:px-9 px-3">
-	<h1 class="sm:text-9xl text-5xl text-center p-9">{game.name} Admin Panel</h1>
+	<h1 class="sm:text-9xl text-5xl text-center p-9">{$game.name} Admin Panel</h1>
+	<div class="grid grid-cols-3 gap-4 mx-auto p-4 bg-base-300 rounded-md w-64">
+		<button
+			class="btn btn-accent"
+			on:click={() => {
+				if ($game.phase === 'Night') {
+					$game.phase = 'Day';
+				} else {
+					$game.phase = 'Night';
+					$game.round = $game.round - 1;
+				}
+				client.gameApi.updateGame($game.id.toString(), $game);
+			}}>-</button
+		>
+		<h2 class="text-3xl font-bold text-center">
+			{$game.phase}
+			{$game.round}
+		</h2>
+		<button
+			class="btn btn-accent"
+			on:click={() => {
+				if ($game.phase === 'Day') {
+					$game.phase = 'Night';
+				} else {
+					$game.phase = 'Day';
+					$game.round = $game.round + 1;
+				}
+				client.gameApi.updateGame($game.id.toString(), $game);
+			}}>+</button
+		>
+	</div>
 
 	{#if roles && rooms}
 		<AddPlayerPanel data={data.playerCreateForm} {roles} {rooms} />
@@ -97,4 +136,26 @@
 			<button class="btn btn-accent" type="submit">Submit </button>
 		{/if}
 	</form>
+
+	<div class="flex flex-row gap-4 p-4">
+		<!-- Open the modal using ID.showModal() method -->
+		<button class="btn btn-accent" onclick="game_modal.showModal()">Delete Game</button>
+		<dialog id="game_modal" class="modal modal-bottom sm:modal-middle">
+			<div class="modal-box">
+				<h3 class="font-bold text-lg">CAUTION: Deleting a player is not revertable</h3>
+				<p class="py-4">
+					WARNING: This will delete the game and all of its players. This cannot be undone.
+				</p>
+				<div class="modal-action">
+					<form method="dialog">
+						<!-- if there is a button in form, it will close the modal -->
+						<div class="flex gap-8">
+							<button on:click={handleDeleteGame} class="btn btn-error"> Delete Game</button>
+							<button class="btn btn-accent">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</dialog>
+	</div>
 </section>

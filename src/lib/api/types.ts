@@ -79,5 +79,7 @@ export interface Action {
 	target: string;
 	context: string;
 	ability_name: string;
+	round: number;
+	priority: number;
 	role_id?: number;
 }

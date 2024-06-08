@@ -8,6 +8,7 @@
 	export let actionOptions: AnyAbilityDetails[];
 	export let game: Game;
 	export let player: Player;
+	export let actionStore = writable<Action[]>([]);
 
 	let loading = writable(false);
 	async function handleSubmit(event) {
@@ -15,10 +16,9 @@
 		loading.set(true);
 		const form = event.target;
 		const formData = new FormData(form);
-		console.log(formData);
 		const actionName = formData.get('action_name');
 		const target = formData.get('target');
-		const context = formData.get('context') || '';
+		const context = formData.get('context');
 
 		const payload: Action = {
 			game_id: game.id,
@@ -30,10 +30,34 @@
 			ability_name: actionName
 		};
 
+		let notFound = false;
+		try {
+			const possibleAbility = await client.abilityDetailsApi.getAbilityDetailByName(actionName);
+			payload.priority = possibleAbility.priority;
+		} catch (error) {
+			console.log(error);
+			notFound = true;
+		}
+
+		if (notFound) {
+			try {
+				const possibleAnyAbility =
+					await client.anyAbilityDetailsApi.getAnyAbilityByName(actionName);
+				if (possibleAnyAbility) {
+					payload.priority = possibleAnyAbility.priority;
+				}
+			} catch (error) {
+				console.log(error);
+				loading.set(false);
+			}
+		}
+
 		console.log(payload);
 		const response = await client.gameApi.createGameAction(game.id, payload);
 		console.log(response);
+		actionStore.update((actions) => [...actions, payload]);
 		loading.set(false);
+		event.target.reset();
 	}
 </script>
 
@@ -64,7 +88,7 @@
 			>Context/Details:
 			<p class="text-sm">(optional)</p></label
 		>
-		<textarea class="textarea textarea-bordered" name="name" />
+		<textarea class="textarea textarea-bordered" name="context" />
 	</div>
 	{#if $loading}
 		<button class="btn">

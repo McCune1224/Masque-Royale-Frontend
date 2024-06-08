@@ -10,8 +10,7 @@
 
 	let navbarlinks: NavbarLink[] = [
 		{ name: 'Admin Home', href: `/games/${game.id}/admin` },
-		{ name: 'Action Queue', href: `/games/${game.id}/admin/queue` },
-		{ name: 'Action History', href: `/games/${game.id}/admin/history` }
+		{ name: 'Action Queue', href: `/games/${game.id}/admin/queue` }
 	];
 
 	// make a map of the navbar links
@@ -39,7 +38,6 @@
 			<ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
 				<li><a href={navbarlinks[0].href}>{navbarlinks[0].name}</a></li>
 				<li><a href={navbarlinks[1].href}>{navbarlinks[1].name}</a></li>
-				<li><a href={navbarlinks[2].href}>{navbarlinks[2].name}</a></li>
 			</ul>
 		</div>
 		<a href={`/games/${game.id}/admin`} class="btn btn-ghost text-xl">Admin Home</a>
@@ -48,7 +46,6 @@
 		<ul class="menu menu-horizontal px-1">
 			<li><a href={navbarlinks[0].href}>{navbarlinks[0].name}</a></li>
 			<li><a href={navbarlinks[1].href}>{navbarlinks[1].name}</a></li>
-			<li><a href={navbarlinks[2].href}>{navbarlinks[2].name}</a></li>
 		</ul>
 	</div>
 	<div class="navbar-end">
