@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { PageData, PageServerData } from './$types';
+	import type { PageData } from './$types';
 	import { writable } from 'svelte/store';
 	import { ApiClient } from '$lib/api/client';
 	import type { Category } from '$lib/api/types';

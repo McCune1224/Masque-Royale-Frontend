@@ -113,8 +113,10 @@
 				{/if}
 			</button>
 			<!-- Open the modal using ID.showModal() method -->
-			<button class="btn btn-accent" onclick="my_modal_5.showModal()">Delete Player</button>
-			<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+			<button class="btn btn-accent" onclick={`player_${player.id}.showModal()`}
+				>Delete Player</button
+			>
+			<dialog id={`player_${player.id}`} class="modal modal-bottom sm:modal-middle">
 				<div class="modal-box">
 					<h3 class="font-bold text-lg">CAUTION: Deleting a player is not revertable</h3>
 					<p class="py-4">
