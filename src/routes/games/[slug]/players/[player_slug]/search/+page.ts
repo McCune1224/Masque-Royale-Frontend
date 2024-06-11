@@ -2,17 +2,20 @@ import { ApiError } from '$lib/api/api';
 import { ApiClient } from '$lib/api/client';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import type { AbilityDetails, AnyAbilityDetails } from '$lib/api/types';
+import type { AbilityDetails, AnyAbilityDetails, Status } from '$lib/api/types';
 
 export const load: PageLoad = async () => {
 	const client = new ApiClient();
 	let allAbilities: (AbilityDetails | AnyAbilityDetails)[] = [];
+	let statuses: Status[] = [];
 	try {
 		//get all abilities and any abilities, merge them into one array, skipping duplicates (aka name is in the list already)
 		await Promise.all([
 			client.abilityDetailsApi.getAllAbilitiesDetails(),
-			client.anyAbilityDetailsApi.getAllAnyAbilities()
-		] as const).then(([abilities, anyAbilities]) => {
+			client.anyAbilityDetailsApi.getAllAnyAbilities(),
+			client.statusApi.GetAllStatuses()
+		] as const).then(([abilities, anyAbilities, statusesResponse]) => {
+			statuses = statusesResponse;
 			allAbilities = [...abilities, ...anyAbilities].filter(
 				(ability, index, self) => self.findIndex((a) => a.name === ability.name) === index
 			);
@@ -24,6 +27,5 @@ export const load: PageLoad = async () => {
 		}
 		return error(500, 'Something went wrong');
 	}
-
-	return { allAbilities };
+	return { allAbilities, statuses };
 };

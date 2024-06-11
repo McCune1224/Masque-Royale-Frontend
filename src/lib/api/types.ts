@@ -70,6 +70,12 @@ export interface Room {
 	description: string;
 }
 
+export interface Status {
+	id: number;
+	name: string;
+	description: string;
+}
+
 export interface Action {
 	id: number;
 	game_id: number;
