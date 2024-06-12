@@ -57,6 +57,12 @@
 			goto('/');
 		} catch (error) {}
 	}
+	// Function to highlight text based on search term
+	function highlightText(text, term) {
+		if (!term.trim()) return text;
+		const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+		return text.replace(regex, '<mark>$1</mark>');
+	}
 </script>
 
 <section class="flex flex-col justify-center gap-4 sm:px-9 px-3">

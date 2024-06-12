@@ -3,9 +3,8 @@ import { ApiClient } from '$lib/api/client';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ params, parent }) => {
+export const load: PageLoad = async ({ params }) => {
 	const client = new ApiClient();
-	const parentData = await parent();
 	try {
 		// make wait group to wait for all the async calls
 		const currentPlayer = await client.playerApi.getPlayer(params.slug, params.player_slug);

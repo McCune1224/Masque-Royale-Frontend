@@ -16,4 +16,5 @@ export class roleApi extends ApiClientBase {
 	public async getCompleteRole(id: string): Promise<CompleteRole> {
 		return this.get<CompleteRole>(`/api/roles/${id}/complete`);
 	}
+
 }

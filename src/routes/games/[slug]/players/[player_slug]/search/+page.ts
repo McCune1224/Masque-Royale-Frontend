@@ -2,7 +2,7 @@ import { ApiError } from '$lib/api/api';
 import { ApiClient } from '$lib/api/client';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import type { AbilityDetails, AnyAbilityDetails, Status } from '$lib/api/types';
+import type { AbilityDetails, AnyAbilityDetails, Role, Status } from '$lib/api/types';
 
 export const load: PageLoad = async () => {
 	const client = new ApiClient();
@@ -19,7 +19,6 @@ export const load: PageLoad = async () => {
 			allAbilities = [...abilities, ...anyAbilities].filter(
 				(ability, index, self) => self.findIndex((a) => a.name === ability.name) === index
 			);
-			console.log('allAbilities Page load side', allAbilities.length);
 		});
 	} catch (err) {
 		if (err instanceof ApiError) {
@@ -27,5 +26,6 @@ export const load: PageLoad = async () => {
 		}
 		return error(500, 'Something went wrong');
 	}
+
 	return { allAbilities, statuses };
 };

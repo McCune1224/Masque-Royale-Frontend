@@ -10,9 +10,9 @@
 	};
 
 	let navbarlinks: NavbarLink[] = [
-		{ name: 'Action Requests', href: `/games/${game_id}/players/${player_id}/requests` },
+		{ name: 'Requests', href: `/games/${game_id}/players/${player_id}/requests` },
 		{ name: 'Role Card', href: `/games/${game_id}/players/${player_id}` },
-		{ name: 'Ability Search', href: `/games/${game_id}/players/${player_id}/search` }
+		{ name: 'Search', href: `/games/${game_id}/players/${player_id}/search` }
 	];
 
 	// make a map of the navbar links
