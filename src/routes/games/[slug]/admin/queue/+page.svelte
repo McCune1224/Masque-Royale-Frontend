@@ -53,11 +53,11 @@
 	{#if $actions}
 		<div class="flex flex-col sm:flex-row gap-4 p-4 mx-auto text-xl">
 			<div>
-				<h2 class="text-3xl font-bold text-center">Pending</h2>
+				<h2 class="text-3xl font-bold text-center">Current Queue</h2>
 				<Todo {actions} done={false} {game} {roundFilter} />
 			</div>
 			<div>
-				<h2 class="text-3xl font-bold text-center">Done</h2>
+				<h2 class="text-3xl font-bold text-center">Completed Queue</h2>
 				<Todo {actions} done={true} {game} {roundFilter} />
 			</div>
 		</div>
