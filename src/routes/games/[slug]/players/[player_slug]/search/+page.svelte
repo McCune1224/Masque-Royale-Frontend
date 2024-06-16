@@ -47,7 +47,7 @@
 			bind:value={searchTerm}
 		/>
 	</label>
-	{#each $filteredAbilities as filterResult}
+	{#each $filteredAbilities as filterResult (filterResult.name)}
 		<AbilityCard {filterResult} {term} {statuses} />
 	{/each}
 </main>

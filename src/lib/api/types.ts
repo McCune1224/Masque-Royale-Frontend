@@ -36,20 +36,8 @@ export interface AbilityDetails {
 	name: string;
 	description: string;
 	default_charges: number;
-	category_ids: number[];
 	rarity: string;
-	priority: number;
 	anyAbility: boolean;
-}
-
-export interface AnyAbilityDetails {
-	id: number;
-	name: string;
-	shorthand: string;
-	description: string;
-	category_ids: number[];
-	rarity: string;
-	priority: number;
 }
 
 export interface Category {
