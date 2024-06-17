@@ -10,7 +10,7 @@
 		return parts
 			.map((part) => {
 				if (part.match(regex)) {
-					return `<b class="underline decoration-secondary">${part}</b>`;
+					return `<b class="underline font-extrabold decoration-secondary">${part}</b>`;
 				} else {
 					return part;
 				}

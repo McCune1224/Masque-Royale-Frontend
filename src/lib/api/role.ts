@@ -1,6 +1,6 @@
 import { PUBLIC_BACKEND_URL } from '$env/static/public';
 import { ApiClientBase } from './api';
-import type { CompleteRole, Role } from './types';
+import type { AbilityDetails, CompleteRole, PassiveDetails, Role } from './types';
 
 export class roleApi extends ApiClientBase {
 	constructor() {
@@ -15,6 +15,14 @@ export class roleApi extends ApiClientBase {
 
 	public async getCompleteRole(id: string): Promise<CompleteRole> {
 		return this.get<CompleteRole>(`/api/roles/${id}/complete`);
+	}
+
+	public async getRoleAbilities(id: string): Promise<AbilityDetails[]> {
+		return this.get<AbilityDetails[]>(`/api/roles/${id}/abilities`);
+	}
+
+	public async getRolePassives(id: string): Promise<PassiveDetails[]> {
+		return this.get<PassiveDetails[]>(`/api/roles/${id}/passives`);
 	}
 
 }

@@ -19,7 +19,7 @@ export const load: PageLoad = async () => {
 		});
 	} catch (err) {
 		if (err instanceof ApiError) {
-			return error(500, err.message);
+			return error(500, err.message + " PISSSSSSSSSSSSSSSSSSSSSSSSSS",);
 		}
 		return error(500, 'Something went wrong');
 	}

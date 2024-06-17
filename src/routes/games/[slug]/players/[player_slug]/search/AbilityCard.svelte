@@ -14,6 +14,7 @@
 	export const client = new ApiClient();
 
 	export let associatedRole = writable<Role>();
+	let searching = writable<boolean>(true);
 	onMount(async () => {
 		try {
 			//type cast to AbilityDetails and check if role_id is set
@@ -22,8 +23,13 @@
 			);
 		} catch (e) {
 			if (e instanceof ApiError) {
-				console.log(e.message);
+				// check if non 400 error
+				if (e.status !== 400 && e.status !== 404) {
+					console.log(e.status, e.message);
+				}
 			}
+		} finally {
+			searching.set(false);
 		}
 	});
 </script>
@@ -36,16 +42,15 @@
 	<Highlight text={filterResult.description} term={$term} />
 
 	{#if $associatedRole}
-		<p>Role: {$associatedRole.name} ({$associatedRole.alignment} {filterResult.name})</p>
 		<div class="indicator">
 			<span class="indicator-item badge badge-primary">?</span>
 			<button class="btn btn-sm btn-accent" onclick={`my_modal_${$associatedRole.id}.showModal()`}
-				>{$associatedRole.name}</button
+				>Role: {$associatedRole.name}</button
 			>
 		</div>
 		<dialog id={`my_modal_${$associatedRole.id}`} class="modal modal-bottom sm:modal-middle">
 			<div class="modal-box">
-				<RoleCard role_id={$associatedRole.id.toString()} />
+				<RoleCard role={$associatedRole} />
 				<div class="modal-action">
 					<form method="dialog">
 						<!-- if there is a button in form, it will close the modal -->
@@ -54,7 +59,16 @@
 				</div>
 			</div>
 		</dialog>
+	{:else if $searching}
+		<div class="indicator">
+			<span class="indicator-item badge badge-primary"></span>
+			<button class="btn btn-sm" disabled>
+				<span class="loading loading-spinner text-accent"></span>
+				finding role...
+			</button>
+		</div>
 	{/if}
+
 	<div class="p-2 flex flex-row gap-5">
 		{#each statuses as status}
 			{#if filterResult.description.toLowerCase().includes(status.name.toLowerCase())}
