@@ -3,7 +3,8 @@ import { PUBLIC_BACKEND_URL } from '$env/static/public';
 export class ApiError extends Error {
 	constructor(
 		message: string,
-		public status: number
+		public status: number,
+		public endpoint: string
 	) {
 		super(message);
 		this.name = 'ApiError';
@@ -29,7 +30,8 @@ export class ApiClientBase {
 			const errorResponse = await response.json();
 			throw new ApiError(
 				errorResponse.message || response.error || response.statusText || errorResponse.message,
-				response.status
+				response.status,
+				endpoint,
 			);
 		}
 

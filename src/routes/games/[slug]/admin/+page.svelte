@@ -3,25 +3,26 @@
 	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 	import { writable, derived, type Writable } from 'svelte/store';
 	import { roleSubmitting, anyAbilitySubmitting } from './stores';
-	import AddPlayerPanel from '$lib/components/admin/AddPlayerPanel.svelte';
 	import { goto } from '$app/navigation';
-	import type { PageServerData } from './$types';
-	import PlayerAdminCard from '$lib/components/admin/PlayerAdminCard.svelte';
+	import type { PageData, PageServerData } from './$types';
+	import PlayerAdminCard from './PlayerAdminCard.svelte';
 	import type { Game, Player } from '$lib/api/types';
 	import { ApiClient } from '$lib/api/client';
+	import PlayerCreateForm from './PlayerCreateForm.svelte';
 
 	const client = new ApiClient();
 	export let data: PageServerData;
 	const { roles } = data;
 	const { rooms } = data;
 	const { players } = data;
+	const { game } = data as PageData;
 
 	const playerStore = writable<Player[]>([]);
 	if (players) {
 		playerStore.set(players);
 	}
 
-	const game = writable<Game>(data.game);
+	const gameStore = writable<Game>(game);
 
 	function formPost(url: string, state: Writable<boolean>) {
 		return async (event) => {
@@ -53,95 +54,93 @@
 
 	async function handleDeleteGame() {
 		try {
-			const response = await client.gameApi.deleteGame($game.id.toString());
+			const response = await client.gameApi.deleteGame($gameStore.id.toString());
 			goto('/');
 		} catch (error) {}
-	}
-	// Function to highlight text based on search term
-	function highlightText(text, term) {
-		if (!term.trim()) return text;
-		const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-		return text.replace(regex, '<mark>$1</mark>');
 	}
 </script>
 
 <section class="flex flex-col justify-center gap-4 sm:px-9 px-3">
-	<h1 class="sm:text-9xl text-5xl text-center p-9">{$game.name} Admin Panel</h1>
+	<h1 class="sm:text-9xl text-5xl text-center p-9">{$gameStore.name} Admin Panel</h1>
 	<div class="grid grid-cols-3 gap-4 mx-auto p-4 bg-base-300 rounded-md w-64">
 		<button
 			class="btn btn-accent"
 			on:click={() => {
-				if ($game.phase === 'Night') {
-					$game.phase = 'Day';
+				if ($gameStore.phase === 'Night') {
+					$gameStore.phase = 'Day';
 				} else {
-					$game.phase = 'Night';
-					$game.round = $game.round - 1;
+					$gameStore.phase = 'Night';
+					$gameStore.round = $gameStore.round - 1;
 				}
-				client.gameApi.updateGame($game.id.toString(), $game);
+				client.gameApi.updateGame($gameStore.id.toString(), $gameStore);
 			}}>-</button
 		>
 		<h2 class="text-3xl font-bold text-center">
-			{$game.phase}
-			{$game.round}
+			{$gameStore.phase}
+			{$gameStore.round}
 		</h2>
 		<button
 			class="btn btn-accent"
 			on:click={() => {
-				if ($game.phase === 'Day') {
-					$game.phase = 'Night';
+				if ($gameStore.phase === 'Day') {
+					$gameStore.phase = 'Night';
 				} else {
-					$game.phase = 'Day';
-					$game.round = $game.round + 1;
+					$gameStore.phase = 'Day';
+					$gameStore.round = $gameStore.round + 1;
 				}
-				client.gameApi.updateGame($game.id.toString(), $game);
+				client.gameApi.updateGame($gameStore.id.toString(), $gameStore);
 			}}>+</button
 		>
 	</div>
 
 	{#if roles && rooms}
-		<AddPlayerPanel data={data.playerCreateForm} {roles} {rooms} />
+		<PlayerCreateForm {playerStore} game_id={$gameStore.id.toString()} {roles} {rooms} />
+	{:else}
+		<form
+			class="flex flex-row gap-4 p-4"
+			on:submit={handleRoleSubmit}
+			enctype="multipart/form-data"
+		>
+			<p class="text-xl font-bold">Upload Roles CSV</p>
+			<label>
+				<input type="file" name="file" class="file-input file-input-bordered w-full max-w-xs" />
+			</label>
+			{#if $roleSubmitting}
+				<button class="btn btn-disabled" disabled
+					>Updating Roles<span class="loading loading-ring loading-md"></span></button
+				>
+			{:else}
+				<button class="btn btn-accent" type="submit">Submit </button>
+			{/if}
+		</form>
+
+		<form
+			class="flex flex-row gap-4 p-4"
+			on:submit={handleAnyAbilitySubmit}
+			enctype="multipart/form-data"
+		>
+			<p class="text-xl font-bold">Upload AnyAbilities CSV</p>
+			<label>
+				<input type="file" name="file" class="file-input file-input-bordered w-full max-w-xs" />
+			</label>
+			{#if $anyAbilitySubmitting}
+				<button class="btn btn-disabled" disabled
+					>Updating Any AnyAbilities<span class="loading loading-ring loading-md"></span></button
+				>
+			{:else}
+				<button class="btn btn-accent" type="submit">Submit </button>
+			{/if}
+		</form>
 	{/if}
 
 	{#if players != undefined}
 		<h2 class="font-bold">Players</h2>
 		<div class="flex flex-col gap-4 sm:grid sm:grid-cols-3 sm:gap-4">
 			{#each $playerStore.sort((a, b) => a.name.localeCompare(b.name)) as player}
-				<PlayerAdminCard {player} {playerStore} />
+				<PlayerAdminCard game_id={$gameStore.id.toString()} {player} {playerStore} />
 			{/each}
 		</div>
 	{/if}
-
-	<form class="flex flex-row gap-4 p-4" on:submit={handleRoleSubmit} enctype="multipart/form-data">
-		<p class="text-xl font-bold">Upload Roles CSV</p>
-		<label>
-			<input type="file" name="file" class="file-input file-input-bordered w-full max-w-xs" />
-		</label>
-		{#if $roleSubmitting}
-			<button class="btn btn-disabled" disabled
-				>Updating Roles<span class="loading loading-ring loading-md"></span></button
-			>
-		{:else}
-			<button class="btn btn-accent" type="submit">Submit </button>
-		{/if}
-	</form>
-
-	<form
-		class="flex flex-row gap-4 p-4"
-		on:submit={handleAnyAbilitySubmit}
-		enctype="multipart/form-data"
-	>
-		<p class="text-xl font-bold">Upload AnyAbilities CSV</p>
-		<label>
-			<input type="file" name="file" class="file-input file-input-bordered w-full max-w-xs" />
-		</label>
-		{#if $anyAbilitySubmitting}
-			<button class="btn btn-disabled" disabled
-				>Updating Any AnyAbilities<span class="loading loading-ring loading-md"></span></button
-			>
-		{:else}
-			<button class="btn btn-accent" type="submit">Submit </button>
-		{/if}
-	</form>
 
 	<div class="flex flex-row gap-4 p-4">
 		<!-- Open the modal using ID.showModal() method -->

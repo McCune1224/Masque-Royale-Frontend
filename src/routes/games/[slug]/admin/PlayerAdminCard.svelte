@@ -1,20 +1,30 @@
 <script lang="ts">
 	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 	import { ApiClient } from '$lib/api/client';
-	import type { Player, Room } from '$lib/api/types';
+	import type { Player, PlayerAbility, Room } from '$lib/api/types';
 	import { onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
 
 	export let player: Player;
 	export let playerStore: Writable<Player[]>;
+	export let game_id: string;
 	const client = new ApiClient();
 
 	//reactive room variable:
 	let room: Room;
+	let playerNotes = writable<{ player_id: number; notes: string }>();
+	let playerAbilities = writable<PlayerAbility[]>();
 	const loading = writable(true);
 	onMount(async () => {
 		room = await client.roomApi.getRoom(player.room_id);
 		loading.set(false);
+
+		try {
+			playerAbilities.set(await client.playerApi.getPlayerAbilities(game_id, player.id.toString()));
+			playerNotes.set(await client.playerApi.getPlayerNotes(game_id, player.id.toString()));
+		} catch (error) {
+			console.log(error);
+		}
 	});
 
 	let loadingAliveToggle = false;
@@ -36,7 +46,6 @@
 		try {
 			const response = await client.playerApi.deletePlayer(player);
 			playerStore.update((cp: Player[]) => {
-				// I don't know why, but this is deleting the item infront of it
 				return cp.filter((p: Player) => p.id !== player.id);
 			});
 			loadingDeletePlayer = false;
@@ -86,10 +95,21 @@
 		</div>
 	</div>
 	<div class="">
+		{#if $playerAbilities}
+			<div class="flex flex-col gap-2">
+				<p>Player Abilities</p>
+				{#each $playerAbilities as ability}
+					<p>{ability.name}</p>
+					<p>{ability.charges}</p>
+				{/each}
+			</div>
+		{/if}
 		<!-- You can open the modal using ID.showModal() method -->
 		<div class="flex flex-col gap-2">
-			<p>Player Notes</p>
-			<textarea class="textarea textarea-accent textarea-lg" bind:value={player.notes} />
+			{#if $playerNotes}
+				<p>Player Notes</p>
+				<textarea class="textarea textarea-accent textarea-lg" bind:value={$playerNotes.notes} />
+			{/if}
 			<button
 				class={`btn ${loadingAddNotes ? 'btn-disabled' : 'btn-accent'}`}
 				on:click={handleAddNotes}

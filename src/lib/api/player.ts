@@ -1,6 +1,6 @@
 import { PUBLIC_BACKEND_URL } from '$env/static/public';
 import { ApiClientBase } from './api';
-import type { Action, Player } from './types';
+import type { Action, Player, PlayerAbility } from './types';
 
 export class playerApi extends ApiClientBase {
 	constructor() {
@@ -27,8 +27,12 @@ export class playerApi extends ApiClientBase {
 		return this.get<Player>(`/api/games/${gameId}/players/${playerId}`);
 	}
 
-	public async getPlayerActions(gameId: string, playerId: string): Promise<Action[]> {
-		return this.get<Action[]>(`/api/games/${gameId}/players/${playerId}/actions`);
+	public async getPlayerAbilities(gameId: string, playerId: string): Promise<PlayerAbility[]> {
+		return this.get<PlayerAbility[]>(`/api/games/${gameId}/players/${playerId}/abilities`);
+	}
+
+	public async getPlayerNotes(gameId: string, playerId: string): Promise<{ player_id: number, notes: string }> {
+		return this.get<{ player_id: number, notes: string }>(`/api/games/${gameId}/players/${playerId}/notes`);
 	}
 
 }

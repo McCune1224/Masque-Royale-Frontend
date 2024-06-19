@@ -15,8 +15,30 @@ export interface Player {
 	role_id: number;
 	alive: boolean;
 	alignment_override: string;
-	notes: string;
+	// notes: string;
 	room_id: number;
+}
+
+export interface PlayerNotes {
+	player_id: number;
+	notes: string;
+}
+
+
+export interface PlayerAbility {
+	ability_details_id: number;
+	charges: number;
+	name: string;
+	description: string;
+	rarity: string;
+	any_ability: boolean;
+}
+
+export interface PlayerStatus {
+	player_id: number;
+	status_id: number;
+	stack: number;
+	round_given: number;
 }
 
 export interface Role {
