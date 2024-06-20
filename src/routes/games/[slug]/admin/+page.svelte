@@ -137,7 +137,12 @@
 		<h2 class="font-bold">Players</h2>
 		<div class="flex flex-col gap-4 sm:grid sm:grid-cols-3 sm:gap-4">
 			{#each $playerStore.sort((a, b) => a.name.localeCompare(b.name)) as player}
-				<PlayerAdminCard game_id={$gameStore.id.toString()} {player} {playerStore} />
+				<PlayerAdminCard
+					role={roles?.indexOf}
+					game_id={$gameStore.id.toString()}
+					{player}
+					{playerStore}
+				/>
 			{/each}
 		</div>
 	{/if}
