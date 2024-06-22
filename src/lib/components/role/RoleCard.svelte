@@ -27,13 +27,25 @@
 			}
 		}
 	});
+
+	function alignmentTailwindColor(alignment: string) {
+		if (alignment === 'OUTLANDER') {
+			return 'text-warning';
+		}
+		if (alignment === 'LAWFUL') {
+			return 'text-success';
+		}
+		if (alignment === 'CHAOTIC') {
+			return 'text-error';
+		}
+	}
 </script>
 
 <div class="flex flex-col gap-4 bg-base-300 p-4 rounded-lg">
 	<div class="flex flex-col gap-2">
 		<h1 class="text-xl font-bold">
 			{role.name}
-			<p class="text-sm italic">{role.alignment}</p>
+			<p class={'text-sm italic ' + alignmentTailwindColor(role.alignment)}>{role.alignment}</p>
 		</h1>
 	</div>
 	<div class="flex flex-col">
@@ -41,7 +53,7 @@
 		{#if $abilities}
 			{#each $abilities as ability}
 				<div class="flex gap-1 flex-col p-4">
-					<h2 class="italic underline underline-offset-4 decoration-secondary">{ability.name}</h2>
+					<h2 class="italic underline underline-offset-4">{ability.name}</h2>
 					<p class="prose">{ability.description}</p>
 				</div>
 			{/each}
@@ -50,7 +62,7 @@
 		{#if $passives}
 			{#each $passives as passive}
 				<div class="flex gap-1 flex-col p-4">
-					<h2 class="italic underline underline-offset-4 decoration-secondary">{passive.name}</h2>
+					<h2 class="italic underline underline-offset-4">{passive.name}</h2>
 					<p class="prose">{passive.description}</p>
 				</div>
 			{/each}

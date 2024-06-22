@@ -56,7 +56,7 @@
 				{/each}
 			</select>
 
-			<button class="btn btn-accent">Add Player</button>
+			<button class="btn btn-primary">Add Player</button>
 		</div>
 	</form>
 </div>

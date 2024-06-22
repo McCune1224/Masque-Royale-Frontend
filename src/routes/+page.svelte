@@ -30,7 +30,7 @@
 				Sending...
 			</button>
 		{/if}
-		<button class="btn btn-accent">Submit Game</button>
+		<button class="btn btn-primary">Submit Game</button>
 	</form>
 
 	<div class="">
@@ -41,8 +41,8 @@
 						<div class="stat text-center border-2 shadow-2xl">
 							<div class="text-3xl">{game.name}</div>
 							<div class="gap-2">
-								<a href={`/games/${game.id}/join`} class="btn btn-accent">Player Join</a>
-								<a href={`/games/${game.id}/admin`} class="btn btn-accent">Admin Join</a>
+								<a href={`/games/${game.id}/join`} class="btn btn-primary">Player Join</a>
+								<a href={`/games/${game.id}/admin`} class="btn btn-primary">Admin Join</a>
 							</div>
 						</div>
 					</div>

@@ -31,6 +31,10 @@ export class playerApi extends ApiClientBase {
 		return this.get<PlayerAbility[]>(`/api/games/${gameId}/players/${playerId}/abilities`);
 	}
 
+	public async updatePlayerAbility(gameId: string, playerId: string, abilityId: string, newCharge: number): Promise<PlayerAbility> {
+		return this.put<PlayerAbility>(`/api/games/${gameId}/players/${playerId}/abilities/${abilityId}`, { charges: newCharge });
+	}
+
 	public async getPlayerNotes(gameId: string, playerId: string): Promise<{ player_id: number, notes: string }> {
 		return this.get<{ player_id: number, notes: string }>(`/api/games/${gameId}/players/${playerId}/notes`);
 	}

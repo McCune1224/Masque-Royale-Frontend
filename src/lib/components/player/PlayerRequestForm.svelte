@@ -96,6 +96,6 @@
 			Sending...
 		</button>
 	{:else}
-		<button class="btn btn-accent" type="submit">Submit Request</button>
+		<button class="btn btn-primary" type="submit">Submit Request</button>
 	{/if}
 </form>

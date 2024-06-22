@@ -49,13 +49,15 @@
 	}
 </script>
 
-<div class="bg-neutral p-3 shadow-lg mg-auto">
+<details class="collapse bg-neutral p-3 shadow-lg mg-auto">
+	<summary class="collapse-title text-xl font-bold">
+		<h2 class="text-center">Click To Add Player</h2>
+	</summary>
 	<form
-		class="flex flex-col gap-4 bg-neutral p-3 shadow-lg mg-auto"
+		class="flex collapse-content flex-col gap-4 bg-neutral p-3 shadow-lg mg-auto"
 		method="POST"
 		on:submit={handleSubmit}
 	>
-		<h2 class="text-xl font-bold">Add Player</h2>
 		<div class="flex flex-col gap-4">
 			Player Name
 			{#if $nameError && $nameError !== ''}
@@ -82,7 +84,7 @@
 				{/each}
 			</select>
 
-			<button class="btn btn-accent">Add Player</button>
+			<button class="btn btn-primary">Add Player</button>
 		</div>
 	</form>
-</div>
+</details>

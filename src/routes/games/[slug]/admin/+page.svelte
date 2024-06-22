@@ -62,36 +62,6 @@
 
 <section class="flex flex-col justify-center gap-4 sm:px-9 px-3">
 	<h1 class="sm:text-9xl text-5xl text-center p-9">{$gameStore.name} Admin Panel</h1>
-	<div class="grid grid-cols-3 gap-4 mx-auto p-4 bg-base-300 rounded-md w-64">
-		<button
-			class="btn btn-accent"
-			on:click={() => {
-				if ($gameStore.phase === 'Night') {
-					$gameStore.phase = 'Day';
-				} else {
-					$gameStore.phase = 'Night';
-					$gameStore.round = $gameStore.round - 1;
-				}
-				client.gameApi.updateGame($gameStore.id.toString(), $gameStore);
-			}}>-</button
-		>
-		<h2 class="text-3xl font-bold text-center">
-			{$gameStore.phase}
-			{$gameStore.round}
-		</h2>
-		<button
-			class="btn btn-accent"
-			on:click={() => {
-				if ($gameStore.phase === 'Day') {
-					$gameStore.phase = 'Night';
-				} else {
-					$gameStore.phase = 'Day';
-					$gameStore.round = $gameStore.round + 1;
-				}
-				client.gameApi.updateGame($gameStore.id.toString(), $gameStore);
-			}}>+</button
-		>
-	</div>
 
 	{#if roles && rooms}
 		<PlayerCreateForm {playerStore} game_id={$gameStore.id.toString()} {roles} {rooms} />
@@ -110,7 +80,7 @@
 					>Updating Roles<span class="loading loading-ring loading-md"></span></button
 				>
 			{:else}
-				<button class="btn btn-accent" type="submit">Submit </button>
+				<button class="btn btn-primary" type="submit">Submit </button>
 			{/if}
 		</form>
 
@@ -128,13 +98,46 @@
 					>Updating Any AnyAbilities<span class="loading loading-ring loading-md"></span></button
 				>
 			{:else}
-				<button class="btn btn-accent" type="submit">Submit </button>
+				<button class="btn btn-primary" type="submit">Submit </button>
 			{/if}
 		</form>
 	{/if}
 
+	<section class="grid grid-cols-3 gap-4 mx-auto p-4 bg-neutral rounded-md w-full">
+		<button
+			class="btn w-auto btn-primary"
+			on:click={() => {
+				if ($gameStore.phase === 'Day' && $gameStore.round === 0) {
+					return;
+				}
+				if ($gameStore.phase === 'Night') {
+					$gameStore.phase = 'Day';
+				} else {
+					$gameStore.phase = 'Night';
+					$gameStore.round = $gameStore.round - 1;
+				}
+				client.gameApi.updateGame($gameStore.id.toString(), $gameStore);
+			}}>-</button
+		>
+		<h2 class="text-3xl font-bold text-center">
+			{$gameStore.phase}
+			{$gameStore.round}
+		</h2>
+		<button
+			class="btn btn-primary"
+			on:click={() => {
+				if ($gameStore.phase === 'Day') {
+					$gameStore.phase = 'Night';
+				} else {
+					$gameStore.phase = 'Day';
+					$gameStore.round = $gameStore.round + 1;
+				}
+				client.gameApi.updateGame($gameStore.id.toString(), $gameStore);
+			}}>+</button
+		>
+	</section>
+
 	{#if players != undefined}
-		<h2 class="font-bold">Players</h2>
 		<div class="flex flex-col gap-4 sm:grid sm:grid-cols-3 sm:gap-4">
 			{#each $playerStore.sort((a, b) => a.name.localeCompare(b.name)) as player}
 				<PlayerAdminCard
@@ -149,19 +152,17 @@
 
 	<div class="flex flex-row gap-4 p-4">
 		<!-- Open the modal using ID.showModal() method -->
-		<button class="btn btn-accent" onclick="game_modal.showModal()">Delete Game</button>
+		<button class="btn btn-primary" onclick="game_modal.showModal()">Delete Game</button>
 		<dialog id="game_modal" class="modal modal-bottom sm:modal-middle">
 			<div class="modal-box">
-				<h3 class="font-bold text-lg">CAUTION: Deleting a player is not revertable</h3>
-				<p class="py-4">
-					WARNING: This will delete the game and all of its players. This cannot be undone.
-				</p>
+				<h3 class="font-bold text-lg">CAUTION: THIS WILL NUKE THE GAME BEYONG ALL REPAIR</h3>
+				<p class="py-4">THIS IS NOT REVERSABLE</p>
 				<div class="modal-action">
 					<form method="dialog">
 						<!-- if there is a button in form, it will close the modal -->
 						<div class="flex gap-8">
 							<button on:click={handleDeleteGame} class="btn btn-error"> Delete Game</button>
-							<button class="btn btn-accent">Cancel</button>
+							<button class="btn btn-success">Cancel</button>
 						</div>
 					</form>
 				</div>

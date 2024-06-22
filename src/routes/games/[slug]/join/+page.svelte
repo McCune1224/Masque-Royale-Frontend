@@ -11,7 +11,7 @@
 			{#each players.sort((a, b) => a.name.localeCompare(b.name)) as player}
 				<div class="flex flex-col gap-3 bg-neutral p-8 border-2 border-base-200">
 					<p class="text-3xl font-bold text-center">{player.name}</p>
-					<a href={`/games/${game.id}/players/${player.id}`} class="btn btn-accent">Player Join</a>
+					<a href={`/games/${game.id}/players/${player.id}`} class="btn btn-primary">Player Join</a>
 				</div>
 			{/each}
 		{/if}

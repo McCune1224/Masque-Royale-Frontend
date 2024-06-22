@@ -34,7 +34,7 @@
 	});
 </script>
 
-<div class="flex flex-col gap-1 bg-base-300 rounded-md border-2 border-primary p-3">
+<div class="flex flex-col gap-2 bg-base-300 rounded-md border-2 border-primary p-3">
 	<div class="text-xl bold">
 		<Highlight text={filterResult.name} term={$term} />
 	</div>
@@ -43,12 +43,17 @@
 
 	{#if $associatedRole}
 		<div class="indicator">
-			<span class="indicator-item badge badge-primary">?</span>
-			<button class="btn btn-sm btn-accent" onclick={`my_modal_${$associatedRole.id}.showModal()`}
+			<span class="indicator-item badge badge-info">?</span>
+			<button
+				class="btn btn-sm btn-primary"
+				onclick={`my_modal_${$associatedRole.id}_${filterResult.id}.showModal()`}
 				>Role: {$associatedRole.name}</button
 			>
 		</div>
-		<dialog id={`my_modal_${$associatedRole.id}`} class="modal modal-bottom sm:modal-middle">
+		<dialog
+			id={`my_modal_${$associatedRole.id}_${filterResult.id}`}
+			class="modal modal-bottom sm:modal-middle"
+		>
 			<div class="modal-box">
 				<RoleCard role={$associatedRole} />
 				<div class="modal-action">
@@ -63,7 +68,7 @@
 		<div class="indicator">
 			<span class="indicator-item badge badge-primary"></span>
 			<button class="btn btn-sm" disabled>
-				<span class="loading loading-spinner text-accent"></span>
+				<span class="loading loading-spinner text-primary"></span>
 				finding role...
 			</button>
 		</div>
@@ -74,7 +79,7 @@
 			{#if filterResult.description.toLowerCase().includes(status.name.toLowerCase())}
 				<!-- Open the modal using ID.showModal() method -->
 				<div class="indicator">
-					<span class="indicator-item badge badge-primary">?</span>
+					<span class="indicator-item badge badge-info">?</span>
 					<button class="btn btn-xs btn-secondary" onclick={`my_modal_${status.id}.showModal()`}
 						>{status.name}</button
 					>

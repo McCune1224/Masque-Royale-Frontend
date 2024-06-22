@@ -35,7 +35,7 @@
 	<h1 class="sm:text-4xl text-2xl text-center">Filter By Round</h1>
 	<div class="grid grid-cols-3 gap-4 mx-auto p-4 bg-base-300 rounded-md w-64">
 		<button
-			class="btn btn-accent"
+			class="btn btn-primary"
 			on:click={() => {
 				roundFilter.set($roundFilter - 1);
 			}}>-</button
@@ -44,7 +44,7 @@
 			{$roundFilter}
 		</h2>
 		<button
-			class="btn btn-accent"
+			class="btn btn-primary"
 			on:click={() => {
 				roundFilter.set($roundFilter + 1);
 			}}>+</button

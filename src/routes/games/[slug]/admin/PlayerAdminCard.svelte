@@ -21,11 +21,12 @@
 
 		try {
 			Promise.all([
-				playerAbilities.set(
-					await client.playerApi.getPlayerAbilities(game_id, player.id.toString())
-				),
-				playerNotes.set(await client.playerApi.getPlayerNotes(game_id, player.id.toString()))
-			]);
+				client.playerApi.getPlayerAbilities(game_id, player.id.toString()),
+				client.playerApi.getPlayerNotes(game_id, player.id.toString())
+			]).then(([abilitiesResp, notesResp]) => {
+				playerAbilities.set(abilitiesResp);
+				playerNotes.set(notesResp);
+			});
 		} catch (error) {
 			console.log(error);
 		}
@@ -90,54 +91,55 @@
 		(player.alive ? '' : 'border-2 border-dashed border-white opacity-50')}
 >
 	{#if !$initialLoading}
-		<div class="flex flex-row">
-			<p class="text-2xl">{player.name}</p>
-			<span class="span text-sm">{room.name}</span>
-		</div>
-		<div class="">
+		<h2 class="indicator text-4xl place-items-center">
+			{player.name}
+		</h2>
+		<span class="indicator-item badge">{room.name}</span>
+		<div class="grid grid-cols-2 gap-4">
 			{#if $playerAbilities}
 				<div class="dropdown">
-					<div tabindex="0" role="button" class="btn m-1">Inventory</div>
+					<div tabindex="0" role="button" class="btn btn-primary w-full">Abilities</div>
 					<div
 						tabindex="0"
-						class="dropdown-content z-[1] card card-compact w-64 p-2 shadow bg-neutral border-2 text-secondary-content"
+						class="dropdown-content z-[1] card card-compact w-64 p-2 shadow bg-neutral border-2"
 					>
 						{#each $playerAbilities as ability}
-							<PlayerAbilityForm {ability} />
+							<PlayerAbilityForm {game_id} player_id={player.id.toString()} {ability} />
 						{/each}
 					</div>
 				</div>
 			{/if}
-			<!-- You can open the modal using ID.showModal() method -->
-			<div class="flex flex-col gap-2">
-				{#if $playerNotes}
-					<p>Player Notes</p>
-					<textarea class="textarea textarea-accent textarea-lg" bind:value={$playerNotes.notes} />
+			<button
+				class={`btn ${!player.alive ? '' : 'btn-primary'} ${loadingAliveToggle ? 'btn-disabled' : ''}`}
+				on:click={handleToggleAlive}
+			>
+				{#if loadingAliveToggle}
+					<span class="loading loading-spinner"></span>
 				{/if}
-				<button
-					class={`btn ${loadingAddNotes ? 'btn-disabled' : 'btn-accent'}`}
-					on:click={handleAddNotes}
-				>
-					{#if loadingAddNotes}
-						<span class="loading loading-spinner w-25"></span>
-					{/if}
-					Save Notes</button
-				>
-				<button
-					class={`btn ${!player.alive ? '' : 'btn-accent'} ${loadingAliveToggle ? 'btn-disabled' : ''}`}
-					on:click={handleToggleAlive}
-				>
-					{#if loadingAliveToggle}
-						<span class="loading loading-spinner"></span>
-					{/if}
-					{#if !player.alive}
-						Mark Alive
-					{:else}
-						Mark Dead
-					{/if}
-				</button>
-				<!-- Open the modal using ID.showModal() method -->
-				<button class="btn btn-accent" onclick={`player_${player.id}.showModal()`}
+				{#if !player.alive}
+					Mark Alive
+				{:else}
+					Mark Dead
+				{/if}
+			</button>
+		</div>
+
+		<div class="flex flex-col gap-2">
+			{#if $playerNotes}
+				<textarea class="textarea textarea-primary textarea-lg" bind:value={$playerNotes.notes} />
+			{/if}
+			<button
+				class={`btn ${loadingAddNotes ? 'btn-disabled' : 'btn-primary'}`}
+				on:click={handleAddNotes}
+			>
+				{#if loadingAddNotes}
+					<span class="loading loading-spinner w-25"></span>
+				{/if}
+				Save Notes</button
+			>
+
+			<div class="flex justify-start">
+				<button class="btn btn-xs btn-error" onclick={`player_${player.id}.showModal()`}
 					>Delete Player</button
 				>
 				<dialog id={`player_${player.id}`} class="modal modal-middle sm:modal-middle">
@@ -151,7 +153,7 @@
 								<!-- if there is a button in form, it will close the modal -->
 								<div class="flex gap-8">
 									<button class="btn btn-error" on:click={handleDeletePlayer}>Delete Player</button>
-									<button class="btn btn-accent">Cancel</button>
+									<button class="btn btn-primary">Cancel</button>
 								</div>
 							</form>
 						</div>
