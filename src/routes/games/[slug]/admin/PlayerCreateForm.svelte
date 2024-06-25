@@ -49,7 +49,7 @@
 	}
 </script>
 
-<details class="collapse bg-neutral p-3 shadow-lg mg-auto">
+<details class="collapse bg-neutral shadow-lg mg-auto">
 	<summary class="collapse-title text-xl font-bold">
 		<h2 class="text-center">Click To Add Player</h2>
 	</summary>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	//get pblic key from env
 	import { PUBLIC_BACKEND_URL } from '$env/static/public';
-	import { writable, derived, type Writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import { roleSubmitting, anyAbilitySubmitting } from './stores';
 	import { goto } from '$app/navigation';
 	import type { PageData, PageServerData } from './$types';
@@ -143,8 +143,8 @@
 				<PlayerAdminCard
 					role={roles?.indexOf}
 					game_id={$gameStore.id.toString()}
-					{player}
-					{playerStore}
+					player={writable(player)}
+					gamePlayersStore={playerStore}
 				/>
 			{/each}
 		</div>
@@ -152,7 +152,7 @@
 
 	<div class="flex flex-row gap-4 p-4">
 		<!-- Open the modal using ID.showModal() method -->
-		<button class="btn btn-primary" onclick="game_modal.showModal()">Delete Game</button>
+		<button class="btn btn-error" onclick="game_modal.showModal()">Delete Game</button>
 		<dialog id="game_modal" class="modal modal-bottom sm:modal-middle">
 			<div class="modal-box">
 				<h3 class="font-bold text-lg">CAUTION: THIS WILL NUKE THE GAME BEYONG ALL REPAIR</h3>
@@ -162,7 +162,7 @@
 						<!-- if there is a button in form, it will close the modal -->
 						<div class="flex gap-8">
 							<button on:click={handleDeleteGame} class="btn btn-error"> Delete Game</button>
-							<button class="btn btn-success">Cancel</button>
+							<button class="btn btn-primary">Cancel</button>
 						</div>
 					</form>
 				</div>
